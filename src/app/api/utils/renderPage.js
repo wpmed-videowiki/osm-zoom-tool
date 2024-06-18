@@ -9,6 +9,7 @@ const WIDTH = 1280;
 const HEIGHT = 720;
 const SCREENSHOT_EXTENSION = "png";
 const MAP_SELECTOR = "#rendered-map";
+const CONCURRENCY = parseInt(process.env.RENDER_CONCURRENCY || 3);
 
 const getExecutablePath = () => {
   if (process.env.CHROME_BIN) {
@@ -58,7 +59,7 @@ export async function renderPage({
   long,
   duration,
   geojson,
-  concurrency = 3,
+  concurrency = CONCURRENCY,
   outputDir,
 }) {
   // open pages in parallel to speed up rendering
