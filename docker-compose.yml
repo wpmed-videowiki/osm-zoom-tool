@@ -1,0 +1,14 @@
+version: "3"
+services:
+  osm-zoom-tool:
+    build: .
+    ports:
+      - "3000:3000"
+  mongodb:
+    image: mongo:4.4.1
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - ./data:/data/db

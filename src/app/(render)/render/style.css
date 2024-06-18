@@ -1,0 +1,7 @@
+.leaflet-control-attribution.leaflet-control a:first-child {
+  display: none !important;
+}
+
+.leaflet-control-attribution.leaflet-control span {
+  display: none !important;
+}

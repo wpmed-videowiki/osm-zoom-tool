@@ -1,0 +1,19 @@
+body {
+  background-color: #eee;
+}
+
+a {
+  text-decoration: none;
+}
+
+.leaflet-control-attribution.leaflet-control a:first-child {
+  display: none !important;
+}
+
+.leaflet-control-attribution.leaflet-control span {
+  display: none !important;
+}
+
+.sr-only {
+  display: none;
+}
