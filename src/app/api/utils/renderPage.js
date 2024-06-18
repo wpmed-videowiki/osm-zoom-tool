@@ -117,7 +117,7 @@ export async function renderPage({
         }&width=${WIDTH}&height=${HEIGHT}&geojson=${btoa(geojson)}`
       );
       await page.waitForSelector(MAP_SELECTOR);
-      await page.waitForNetworkIdle({ idleTime: 1000 });
+      await page.waitForNetworkIdle({ idleTime: 500 });
       const map = await page.$(MAP_SELECTOR);
       const screenshot = await map.screenshot({ type: SCREENSHOT_EXTENSION });
 
