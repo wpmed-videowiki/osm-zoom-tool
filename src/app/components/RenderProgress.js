@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import LinearProgressWithLabel from "./LinearProgressWithLabel";
 
-const DURATION_MULTIPLIER = 25;
+const DURATION_MULTIPLIER = 15;
+
 export const RenderProgress = ({ duration }) => {
   const [value, setValue] = useState(0);
 
