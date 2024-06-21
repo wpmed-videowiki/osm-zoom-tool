@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Button,
   Container,
@@ -14,10 +15,10 @@ import { renderVideo } from "../../actions/render";
 import { useEffect, useRef, useState } from "react";
 import { PlayCircleOutline } from "@mui/icons-material";
 import { useElementWidth } from "../../hooks/useElementWidth";
+import { getAppUser } from "../../actions/auth";
 
 // Import Map without ssr
 import dynamic from "next/dynamic";
-import { getAppUser } from "../../actions/auth";
 const Map = dynamic(() => import("../../components/RenderMap"), {
   ssr: false,
 });
