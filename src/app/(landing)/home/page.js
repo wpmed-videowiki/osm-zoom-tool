@@ -35,6 +35,7 @@ export default function Home() {
   const [center, setCenter] = useState([12.447, -87.632]);
   const [finalCenter, setFinalCenter] = useState([]);
   const [duration, setDuration] = useState(2000);
+  const [uploadedUrl, setUploadedUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [videoBlob, setVideoBlob] = useState(null);
   const [shapes, setShapes] = useState({});
@@ -44,7 +45,6 @@ export default function Home() {
   const groupRef = useRef(null);
 
   const containerWidth = useElementWidth(containerRef);
-  const [uploadedUrl, setUploadedUrl] = useState("");
 
   const onRender = async () => {
     setLoading(true);
@@ -243,9 +243,12 @@ export default function Home() {
                       alignItems="center"
                       width="100%"
                       spacing={2}
+                      mt={2}
                     >
                       <a href={uploadedUrl} target="_blank" rel="noreferrer">
-                        View on Commons
+                        <Button variant="outlined" size="small" fullWidth>
+                          View on Commons
+                        </Button>
                       </a>
                     </Stack>
                   )}

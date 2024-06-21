@@ -5,14 +5,15 @@ import {
   useMap,
   useMapEvent,
 } from "react-leaflet";
-// import { EditControl } from "react-leaflet-draw";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-// import "leaflet-draw/dist/leaflet.draw.css";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import { GeomanControls } from "react-leaflet-geoman-v2";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+
+const TILE_URL = process.env.NEXT_PUBLIC_TILE_URL;
+
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -26,12 +27,6 @@ L.Icon.Default.mergeOptions({
 
 const SetViewEvents = ({ onZoomChange, onMove }) => {
   const map = useMap();
-  useMapEvent("click", (e) => {
-    // map.setView(e.latlng, map.getZoom(), {
-    //   animate: true,
-    //   duration: 10,
-    // });
-  });
 
   useMapEvent("zoomend", (e) => {
     onZoomChange && onZoomChange(map.getZoom());
@@ -132,7 +127,7 @@ const RenderMap = ({
       </FeatureGroup>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        url={TILE_URL}
       />
       <SetViewEvents onZoomChange={onZoomChange} onMove={onMove} />
     </MapContainer>

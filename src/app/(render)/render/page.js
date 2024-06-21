@@ -16,7 +16,6 @@ const RenderPage = ({ searchParams }) => {
   const geojson = searchParams.geojson
     ? JSON.parse(atob(searchParams.geojson))
     : null;
-    console.log("geojson", geojson)
 
   return (
     <RenderMap

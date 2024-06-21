@@ -6,9 +6,16 @@ import { renderPage } from "../utils/renderPage";
 const generateRandomId = () => Math.random().toString(36).substring(7);
 
 export const POST = async (req, res) => {
-  const { lat, long, initialZoom, finalZoom, duration, geojson } = await req.json();
+  const { lat, long, initialZoom, finalZoom, duration, geojson } =
+    await req.json();
 
-  console.log("GOt reque  ", { lat, long, initialZoom, finalZoom, duration });
+  console.log("Got render page request", {
+    lat,
+    long,
+    initialZoom,
+    finalZoom,
+    duration,
+  });
   if (!lat || !long || !initialZoom || !finalZoom || !duration) {
     return NextResponse.error("Invalid request");
   }
@@ -27,7 +34,7 @@ export const POST = async (req, res) => {
     long,
     duration,
     outputDir,
-    geojson
+    geojson,
   });
 
   console.log("Rendered page: ", outputFilePath);
