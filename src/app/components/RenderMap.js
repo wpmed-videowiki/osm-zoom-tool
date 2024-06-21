@@ -132,8 +132,7 @@ const RenderMap = ({
       </FeatureGroup>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        // url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        url="https://tile.tracestrack.com/topo__/{z}/{x}/{y}.png?key=52804bd4867ee3a3ff19c4214b5dd0d6"
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <SetViewEvents onZoomChange={onZoomChange} onMove={onMove} />
     </MapContainer>

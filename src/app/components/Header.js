@@ -1,9 +1,7 @@
-import { Login } from "@mui/icons-material";
 import {
   AppBar,
   Avatar,
   Box,
-  Button,
   IconButton,
   Menu,
   Stack,
@@ -100,34 +98,6 @@ const Header = () => {
                     }
                   >
                     <Typography textAlign="center">Wikimedia Login</Typography>
-                  </MenuItem>
-                )}
-                {session?.user.nccommonsId ? (
-                  <MenuItem onClick={() => logout("nccommons")}>
-                    <Typography textAlign="center">
-                      NC Commons Logout
-                    </Typography>
-                  </MenuItem>
-                ) : (
-                  <MenuItem
-                    onClick={() =>
-                      popupCenter("/login?provider=nccommons", "Login")
-                    }
-                  >
-                    <Typography textAlign="center">NC Commons Login</Typography>
-                  </MenuItem>
-                )}
-                {session?.user.mdwikiId ? (
-                  <MenuItem onClick={() => logout("mdwiki")}>
-                    <Typography textAlign="center">MD Wiki Logout</Typography>
-                  </MenuItem>
-                ) : (
-                  <MenuItem
-                    onClick={() =>
-                      popupCenter("/login?provider=mdwiki", "Login")
-                    }
-                  >
-                    <Typography textAlign="center">MD Wiki Login</Typography>
                   </MenuItem>
                 )}
               </Menu>

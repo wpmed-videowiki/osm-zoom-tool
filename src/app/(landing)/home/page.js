@@ -8,6 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 import Header from "../../components/Header";
+import RenderProgress from "../../components/RenderProgress";
+import UploadForm from "../../components/UploadForm";
 import { renderVideo } from "../../actions/render";
 import { useEffect, useRef, useState } from "react";
 import { PlayCircleOutline } from "@mui/icons-material";
@@ -15,11 +17,14 @@ import { useElementWidth } from "../../hooks/useElementWidth";
 
 // Import Map without ssr
 import dynamic from "next/dynamic";
+import { getAppUser } from "../../actions/auth";
 const Map = dynamic(() => import("../../components/RenderMap"), {
   ssr: false,
 });
 
 const EXPORT_WIDTH = 1280;
+const MIN_DURATION = 1000;
+const MAX_DURATION = 10000;
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -31,12 +36,14 @@ export default function Home() {
   const [duration, setDuration] = useState(2000);
   const [videoUrl, setVideoUrl] = useState("");
   const [videoBlob, setVideoBlob] = useState(null);
-  const containerRef = useRef(null);
-  const containerWidth = useElementWidth(containerRef);
-  const groupRef = useRef(null);
-  const [geojson, setGeojson] = useState(null);
   const [shapes, setShapes] = useState({});
   const [mapDimensions, setMapDimensions] = useState({ width: 0, height: 0 });
+
+  const containerRef = useRef(null);
+  const groupRef = useRef(null);
+
+  const containerWidth = useElementWidth(containerRef);
+  const [uploadedUrl, setUploadedUrl] = useState("");
 
   const onRender = async () => {
     setLoading(true);
@@ -64,6 +71,10 @@ export default function Home() {
     setLoading(false);
   };
 
+  const onVideoUploaded = (imageinfo) => {
+    setUploadedUrl(imageinfo.descriptionurl);
+  };
+
   const onShapeAdd = (shape) => {
     const id = shape.layer._leaflet_id;
     const shapeData = {
@@ -85,6 +96,7 @@ export default function Home() {
     };
     setShapes((shapes) => ({ ...shapes, [id]: shapeData }));
   };
+
   const onShapeRemove = (shape) => {
     const id = shape.layer._leaflet_id;
     setShapes((shapes) => {
@@ -93,6 +105,7 @@ export default function Home() {
       return newShapes;
     });
   };
+
   useEffect(() => {
     setMapDimensions({
       width: containerWidth,
@@ -100,7 +113,11 @@ export default function Home() {
     });
   }, [containerWidth]);
 
-  console.log({ shapes });
+  useEffect(() => {
+    (async () => {
+      await getAppUser();
+    })();
+  }, []);
 
   return (
     <main className="home">
@@ -172,16 +189,20 @@ export default function Home() {
                     variant="outlined"
                     value={duration}
                     onChange={(e) => setDuration(parseInt(e.target.value))}
-                    InputProps={{ min: 1000, step: 1000, max: 10000 }}
+                    InputProps={{
+                      min: MIN_DURATION,
+                      step: MIN_DURATION,
+                      max: MAX_DURATION,
+                    }}
                   />
-                  {duration < 1000 && (
+                  {duration < MIN_DURATION && (
                     <Typography variant="caption" color="error">
-                      Duration must be at least 1000ms
+                      Duration must be at least {MIN_DURATION}ms
                     </Typography>
                   )}
-                  {duration > 10000 && (
+                  {duration > MAX_DURATION && (
                     <Typography variant="caption" color="error">
-                      Duration must be at most 10000ms
+                      Duration must be at most {MAX_DURATION}ms
                     </Typography>
                   )}
                 </Stack>
@@ -197,6 +218,7 @@ export default function Home() {
                       muted
                     />
                   )}
+                  {loading && <RenderProgress duration={duration} />}
                   <Button
                     size="small"
                     variant="outlined"
@@ -206,14 +228,36 @@ export default function Home() {
                       !initialZoom ||
                       finalZoom === initialZoom ||
                       !duration ||
-                      duration < 1000 ||
-                      duration > 10000 ||
+                      duration < MIN_DURATION ||
+                      duration > MAX_DURATION ||
                       loading
                     }
                     onClick={onRender}
                   >
                     Render
                   </Button>
+                  {uploadedUrl && (
+                    <Stack
+                      justifyContent="center"
+                      alignItems="center"
+                      width="100%"
+                      spacing={2}
+                    >
+                      <a href={uploadedUrl} target="_blank" rel="noreferrer">
+                        View on Commons
+                      </a>
+                    </Stack>
+                  )}
+                  {videoUrl && !loading && (
+                    <UploadForm
+                      license="self|CC-BY-SA-4.0"
+                      permission=""
+                      provider="commons"
+                      video={videoBlob}
+                      categories={[]}
+                      onUploaded={onVideoUploaded}
+                    />
+                  )}
                 </Stack>
               </Stack>
             </Stack>

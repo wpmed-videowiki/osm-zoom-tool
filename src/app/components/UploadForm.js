@@ -33,11 +33,9 @@ const getWikiPageText = ({
 ${categories.join("\n")}
 `.trim();
 const UploadForm = ({
-  title,
   license,
   permission,
   video,
-  wikiSource,
   provider,
   onUploaded,
   disabled,
@@ -45,21 +43,17 @@ const UploadForm = ({
 }) => {
   const { data: session } = useSession();
 
-  const fileTitleParts = title.split(".");
-  fileTitleParts.pop();
-  const tmpFileTitle = fileTitleParts.join(".") + "(KenBurns)";
-
   const [loading, setLoading] = useState(false);
-  const [fileTitle, setFileTitle] = useState(tmpFileTitle);
+  const [fileTitle, setFileTitle] = useState("");
   const [debouncedFileTitle] = useDebounce(fileTitle, 500);
 
   const [pageAlreadyExists, setPageAlreadyExists] = useState(false);
   const [text, setText] = useState(
     getWikiPageText({
-      description: `${fileTitle}. Created by [https://kenburnseffect-tool.wmcloud.org/ OSM Zoom Tool].`,
+      description: `Created by [https://osm-zoom-tool.wmcloud.org/ OSM Zoom Tool].`,
       date: new Date().toISOString().split("T")[0],
-      source: `[[:File:${title}]]`,
-      author: `See [[:File:${title}|original file]] for the list of authors.`,
+      source: `[https://osm-zoom-tool.wmcloud.org/ OSM Zoom Tool]`,
+      author: `[https://osm-zoom-tool.wmcloud.org/ OSM Zoom Tool]`,
       license: license,
       permission,
       categories,
@@ -69,10 +63,10 @@ const UploadForm = ({
   const resetPageText = () => {
     setText(
       getWikiPageText({
-        description: `${fileTitle}. Created by [https://kenburnseffect-tool.wmcloud.org/ OSM Zoom Tool].`,
+        description: `Created by [https://kenburnseffect-tool.wmcloud.org/ OSM Zoom Tool].`,
         date: new Date().toISOString().split("T")[0],
-        source: `[[:File:${title}]]`,
-        author: `See [[:File:${title}|original file]] for the list of authors.`,
+        source: `[https://osm-zoom-tool.wmcloud.org/ OSM Zoom Tool]`,
+        author: `[https://osm-zoom-tool.wmcloud.org/ OSM Zoom Tool]`,
         license: license,
         permission,
         categories,
@@ -87,7 +81,6 @@ const UploadForm = ({
       formData.set("filename", `File:${fileTitle}.webm`);
       formData.set("text", text);
       formData.set("file", video);
-      formData.set("wikiSource", wikiSource);
       formData.set("provider", provider);
 
       const response = await uploadFile(formData);
@@ -104,6 +97,7 @@ const UploadForm = ({
     if (!debouncedFileTitle) return;
     async function checkFileExists() {
       const page = await fetchCommonsImage(`File:${debouncedFileTitle}.webm`);
+      console.log({page})
       if (page && page.pageid) {
         setPageAlreadyExists(true);
       } else {
@@ -216,7 +210,12 @@ const UploadForm = ({
           }}
           startIcon={<UploadFile />}
           onClick={onUpload}
-          disabled={loading || disabled || fileTitle.length >= 230}
+          disabled={
+            loading ||
+            disabled ||
+            fileTitle.length >= 230 ||
+            fileTitle.length === 0
+          }
         >
           {loading
             ? "Uploading..."

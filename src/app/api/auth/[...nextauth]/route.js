@@ -16,40 +16,6 @@ const providers = [
     name: "Commons",
     id: "wikimedia",
   }),
-  WikimediaProvider({
-    token: "https://nccommons.org/w/rest.php/oauth2/access_token",
-    userinfo: "https://nccommons.org/w/rest.php/oauth2/resource/profile",
-    authorization: {
-      url: "https://nccommons.org/w/rest.php/oauth2/authorize",
-    },
-    client: {
-      client_id: process.env.NCCOMMONS_CONSUMER_KEY,
-      client_secret: process.env.NCCOMMONS_CONSUMER_SECRET,
-    },
-    accessTokenUrl: "https://nccommons.org/w/rest.php/oauth2/access_token",
-    requestTokenUrl: "https://nccommons.org/w/rest.php/oauth2/request_token",
-    clientId: process.env.NCCOMMONS_CONSUMER_KEY,
-    clientSecret: process.env.NCCOMMONS_CONSUMER_KEY,
-    name: "NC Commons",
-    id: "nccommons",
-  }),
-  WikimediaProvider({
-    token: "https://mdwiki.org/w/rest.php/oauth2/access_token",
-    userinfo: "https://mdwiki.org/w/rest.php/oauth2/resource/profile",
-    authorization: {
-      url: "https://mdwiki.org/w/rest.php/oauth2/authorize",
-    },
-    client: {
-      client_id: process.env.MDWIKI_CONSUMER_KEY,
-      client_secret: process.env.MDWIKI_CONSUMER_SECRET,
-    },
-    accessTokenUrl: "https://mdwiki.org/w/rest.php/oauth2/access_token",
-    requestTokenUrl: "https://mdwiki.org/w/rest.php/oauth2/request_token",
-    clientId: process.env.MDWIKI_CONSUMER_KEY,
-    clientSecret: process.env.MDWIKI_CONSUMER_KEY,
-    name: "MD Wiki",
-    id: "mdwiki",
-  }),
 ];
 const handler = async (req, res) => {
   const appUserId = req.cookies.get("app-user-id")?.value;
@@ -104,27 +70,6 @@ const handler = async (req, res) => {
           update.wikimediaToken = null;
           update.wikimediaRefreshToken = null;
           update.wikimediaTokenExpiresAt = null;
-        }
-        if (
-          user.mdwikiId &&
-          (!user.mdwikiTokenExpiresAt || user.mdwikiTokenExpiresAt < Date.now())
-        ) {
-          update.mdwikiId = null;
-          update.mdwikiProfile = null;
-          update.mdwikiToken = null;
-          update.mdwikiRefreshToken = null;
-          update.mdwikiTokenExpiresAt = null;
-        }
-        if (
-          user.nccommonsId &&
-          (!user.nccommonsTokenExpiresAt ||
-            user.nccommonsTokenExpiresAt < Date.now())
-        ) {
-          update.nccommonsId = null;
-          update.nccommonsProfile = null;
-          update.nccommonsToken = null;
-          update.nccommonsRefreshToken = null;
-          update.nccommonsTokenExpiresAt = null;
         }
         if (Object.keys(update).length) {
           user = await UserModel.findByIdAndUpdate(

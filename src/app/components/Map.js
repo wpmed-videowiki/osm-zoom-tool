@@ -35,7 +35,6 @@ const Map = () => {
       const interval = setInterval(() => {
         let newZoom = currentZoom + 0.005;
         map.setZoom(newZoom);
-        console.log({ newZoom });
         currentZoom = newZoom;
         if (currentZoom >= finalZoom) {
           clearInterval(interval);
