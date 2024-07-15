@@ -127,21 +127,23 @@ export default function Home() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
             <div ref={containerRef}>
-              <Map
-                key="map"
-                dimensions={mapDimensions}
-                lat={center[0]}
-                long={center[1]}
-                zoomSnap={0.5}
-                zoom={zoom}
-                onMove={(data) => setCenter([data.lat, data.lng])}
-                onZoomChange={setZoom}
-                mode="edit"
-                groupRef={groupRef}
-                onShapeAdd={onShapeAdd}
-                onShapeRemove={onShapeRemove}
-                onShapeChange={onShapeChange}
-              />
+              {mapDimensions.width && mapDimensions.height ? (
+                <Map
+                  key="map"
+                  dimensions={mapDimensions}
+                  lat={center[0]}
+                  long={center[1]}
+                  zoomSnap={0.5}
+                  zoom={zoom}
+                  onMove={(data) => setCenter([data.lat, data.lng])}
+                  onZoomChange={setZoom}
+                  mode="edit"
+                  groupRef={groupRef}
+                  onShapeAdd={onShapeAdd}
+                  onShapeRemove={onShapeRemove}
+                  onShapeChange={onShapeChange}
+                />
+              ) : null}
             </div>
           </Grid>
           <Grid item xs={12} md={4}>
