@@ -36,7 +36,7 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="fixed">
+    <AppBar position="fixed" sx={{ backgroundColor: "white" }}>
       <Container maxWidth="xl">
         <Toolbar
           disableGutters
@@ -51,17 +51,11 @@ const Header = () => {
               display: { xs: "none", md: "flex" },
             }}
           >
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Link href="/">
-                <Typography
-                  variant="h1"
-                  color="white !important"
-                  fontSize="24px"
-                >
-                  OSM Zoom
-                </Typography>
-              </Link>
-            </Stack>
+            <Link href="/">
+              <Stack direction="row" spacing={1} alignItems="center">
+                <img src="/logo.png" width={200} height={57} />
+              </Stack>
+            </Link>
           </Stack>
 
           <Box sx={{ flexGrow: 0 }}>
