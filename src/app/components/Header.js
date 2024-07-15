@@ -10,12 +10,14 @@ import {
   Container,
   Tooltip,
   MenuItem,
+  Select,
 } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { popupCenter } from "../utils/popupTools";
 import { logoutPlatform } from "../actions/auth";
 import Link from "next/link";
+import OtherTools from "./OtherTools";
 
 const Header = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -50,12 +52,18 @@ const Header = () => {
             sx={{
               display: { xs: "none", md: "flex" },
             }}
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
           >
             <Link href="/">
               <Stack direction="row" spacing={1} alignItems="center">
                 <img src="/logo.png" width={200} height={57} />
               </Stack>
             </Link>
+            <Stack sx={{ marginLeft: 2 }}>
+              <OtherTools />
+            </Stack>
           </Stack>
 
           <Box sx={{ flexGrow: 0 }}>
