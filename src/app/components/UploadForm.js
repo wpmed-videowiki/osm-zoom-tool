@@ -40,12 +40,14 @@ const UploadForm = ({
   onUploaded,
   disabled,
   categories = [],
+  exportType,
 }) => {
   const { data: session } = useSession();
 
   const [loading, setLoading] = useState(false);
   const [fileTitle, setFileTitle] = useState("");
   const [debouncedFileTitle] = useDebounce(fileTitle, 500);
+  const outputExtension = exportType === "image" ? "png" : "webm";
 
   const [pageAlreadyExists, setPageAlreadyExists] = useState(false);
   const [text, setText] = useState(
@@ -78,7 +80,7 @@ const UploadForm = ({
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.set("filename", `File:${fileTitle}.webm`);
+      formData.set("filename", `File:${fileTitle}.${outputExtension}`);
       formData.set("text", text);
       formData.set("file", video);
       formData.set("provider", provider);
@@ -96,7 +98,7 @@ const UploadForm = ({
   useEffect(() => {
     if (!debouncedFileTitle) return;
     async function checkFileExists() {
-      const page = await fetchCommonsImage(`File:${debouncedFileTitle}.webm`);
+      const page = await fetchCommonsImage(`File:${debouncedFileTitle}.${outputExtension}`);
       console.log({page})
       if (page && page.pageid) {
         setPageAlreadyExists(true);
@@ -167,7 +169,7 @@ const UploadForm = ({
           size="small"
           InputProps={{
             startAdornment: "File:",
-            endAdornment: ".webm",
+            endAdornment: `.${outputExtension}`,
           }}
         />
         {pageAlreadyExists && (

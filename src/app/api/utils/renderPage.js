@@ -51,7 +51,46 @@ const getExecutablePath = () => {
 puppeteer.use(StealthPlugin());
 // const WIDTH = 1920;
 // const HEIGHT = 1080;
+async function renderSingleFrame({
+  zoom,
+  lat,
+  long,
+  geojson,
+  outputDir,
+})  {
+  const browser = await puppeteer.launch({
+    executablePath: getExecutablePath(),
+    headless: true,
+    args: [
+      "--headless=new",
+      "--no-sandbox",
+      "--autoplay-policy=no-user-gesture-required",
+      `--window-size=${WIDTH},${HEIGHT}`,
+      "--start-fullscreen",
+    ],
+    defaultViewport: {
+      width: WIDTH,
+      height: HEIGHT,
+    },
+  });
+  const page = await browser.newPage();
+  await page.goto(
+    `http://localhost:3000/render?zoom=${zoom}&lat=${lat}&long=${long}&width=${WIDTH}&height=${HEIGHT}&geojson=${btoa(geojson)}`
+  );
+  await page.waitForSelector(MAP_SELECTOR);
+  await page.waitForNetworkIdle({ idleTime: 500 });
+  const map = await page.$(MAP_SELECTOR);
+  const screenshot = await map.screenshot({ type: SCREENSHOT_EXTENSION });
 
+  await fs.promises.writeFile(
+    `${outputDir}/0000.${SCREENSHOT_EXTENSION}`,
+    screenshot
+  );
+
+  await page.close();
+  await browser.close();
+  return `${outputDir}/0000.${SCREENSHOT_EXTENSION}`;
+}
 export async function renderPage({
   initialZoom,
   finalZoom,
@@ -61,7 +100,17 @@ export async function renderPage({
   geojson,
   concurrency = CONCURRENCY,
   outputDir,
+  exportType,
 }) {
+  if (exportType === 'image') {
+    return renderSingleFrame({
+      zoom: finalZoom,
+      lat,
+      long,
+      geojson,
+      outputDir,
+    });
+  }
   // open pages in parallel to speed up rendering
   const FPS = 30;
   const zoomIncrement = (finalZoom - initialZoom) / ((duration / 1000) * FPS);

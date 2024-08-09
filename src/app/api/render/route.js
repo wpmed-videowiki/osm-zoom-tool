@@ -6,7 +6,7 @@ import { renderPage } from "../utils/renderPage";
 const generateRandomId = () => Math.random().toString(36).substring(7);
 
 export const POST = async (req, res) => {
-  const { lat, long, initialZoom, finalZoom, duration, geojson } =
+  const { lat, long, initialZoom, finalZoom, duration, geojson , exportType } =
     await req.json();
 
   console.log("Got render page request", {
@@ -35,6 +35,7 @@ export const POST = async (req, res) => {
     duration,
     outputDir,
     geojson,
+    exportType
   });
 
   console.log("Rendered page: ", outputFilePath);

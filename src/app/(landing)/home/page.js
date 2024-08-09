@@ -2,6 +2,7 @@
 
 import {
   Button,
+  ButtonGroup,
   Container,
   Grid,
   Stack,
@@ -40,6 +41,7 @@ export default function Home() {
   const [videoBlob, setVideoBlob] = useState(null);
   const [shapes, setShapes] = useState({});
   const [mapDimensions, setMapDimensions] = useState({ width: 0, height: 0 });
+  const [exportType, setExportType] = useState("video");
 
   const containerRef = useRef(null);
   const groupRef = useRef(null);
@@ -55,6 +57,7 @@ export default function Home() {
       lat: finalCenter[0],
       long: finalCenter[1],
       geojson: JSON.stringify(shapes),
+      exportType,
     };
     try {
       const response = await renderVideo(data);
@@ -63,7 +66,9 @@ export default function Home() {
           .split("")
           .map((char) => char.charCodeAt(0))
       );
-      const blob = new Blob([byteArray], { type: "video/webm" });
+      const blob = new Blob([byteArray], {
+        type: exportType === "video" ? "video/webm" : "image/png",
+      });
       setVideoUrl(URL.createObjectURL(blob));
       setVideoBlob(blob);
     } catch (err) {
@@ -148,8 +153,102 @@ export default function Home() {
           </Grid>
           <Grid item xs={12} md={4}>
             <h1>Controls</h1>
-            <Stack spacing={4}>
+            <Stack spacing={2}>
               <Stack spacing={3}>
+                <Stack
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  width="100%"
+                >
+                  <Typography variant="h6" sx={{ margin: 0, marginRight: 2 }}>
+                    Export Type:
+                  </Typography>
+                  <ButtonGroup size="small">
+                    <Button
+                      variant={
+                        exportType === "video" ? "contained" : "outlined"
+                      }
+                      onClick={() => setExportType("video")}
+                      size="small"
+                    >
+                      Video
+                    </Button>
+                    <Button
+                      variant={
+                        exportType === "image" ? "contained" : "outlined"
+                      }
+                      onClick={() => setExportType("image")}
+                      size="small"
+                    >
+                      Image
+                    </Button>
+                  </ButtonGroup>
+                </Stack>
+              </Stack>
+              {exportType === "video" ? (
+                <Stack spacing={3}>
+                  <Stack
+                    spacing={1}
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Typography variant="h6">
+                      Start Zoom: {initialZoom}
+                    </Typography>
+                    <Button
+                      size="small"
+                      onClick={() => setInitialZoom(zoom)}
+                      variant="contained"
+                    >
+                      Mark Start Zoom
+                    </Button>
+                  </Stack>
+                  <Stack
+                    spacing={1}
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Typography variant="h6">End Zoom: {finalZoom}</Typography>
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        setFinalZoom(zoom);
+                        setFinalCenter(center);
+                      }}
+                      variant="contained"
+                    >
+                      Mark End Zoom
+                    </Button>
+                  </Stack>
+                  <Stack spacing={1}>
+                    <TextField
+                      type="number"
+                      label="Duration (ms)"
+                      variant="outlined"
+                      value={duration}
+                      onChange={(e) => setDuration(parseInt(e.target.value))}
+                      InputProps={{
+                        min: MIN_DURATION,
+                        step: MIN_DURATION,
+                        max: MAX_DURATION,
+                      }}
+                    />
+                    {duration < MIN_DURATION && (
+                      <Typography variant="caption" color="error">
+                        Duration must be at least {MIN_DURATION}ms
+                      </Typography>
+                    )}
+                    {duration > MAX_DURATION && (
+                      <Typography variant="caption" color="error">
+                        Duration must be at most {MAX_DURATION}ms
+                      </Typography>
+                    )}
+                  </Stack>
+                </Stack>
+              ) : (
                 <Stack
                   spacing={1}
                   flexDirection="row"
@@ -157,23 +256,8 @@ export default function Home() {
                   alignItems="center"
                 >
                   <Typography variant="h6">
-                    Start Zoom: {initialZoom}
+                    Frame Zoom: {finalZoom}
                   </Typography>
-                  <Button
-                    size="small"
-                    onClick={() => setInitialZoom(zoom)}
-                    variant="contained"
-                  >
-                    Mark Start Zoom
-                  </Button>
-                </Stack>
-                <Stack
-                  spacing={1}
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Typography variant="h6">End Zoom: {finalZoom}</Typography>
                   <Button
                     size="small"
                     onClick={() => {
@@ -182,44 +266,26 @@ export default function Home() {
                     }}
                     variant="contained"
                   >
-                    Mark End Zoom
+                    Mark Frame Zoom
                   </Button>
                 </Stack>
-                <Stack spacing={1}>
-                  <TextField
-                    type="number"
-                    label="Duration (ms)"
-                    variant="outlined"
-                    value={duration}
-                    onChange={(e) => setDuration(parseInt(e.target.value))}
-                    InputProps={{
-                      min: MIN_DURATION,
-                      step: MIN_DURATION,
-                      max: MAX_DURATION,
-                    }}
-                  />
-                  {duration < MIN_DURATION && (
-                    <Typography variant="caption" color="error">
-                      Duration must be at least {MIN_DURATION}ms
-                    </Typography>
-                  )}
-                  {duration > MAX_DURATION && (
-                    <Typography variant="caption" color="error">
-                      Duration must be at most {MAX_DURATION}ms
-                    </Typography>
-                  )}
-                </Stack>
-              </Stack>
+              )}
               <Stack spacing={2}>
                 <Stack spacing={1}>
                   {videoUrl && (
-                    <video
-                      controls
-                      src={videoUrl}
-                      style={{ width: "100%" }}
-                      autoPlay
-                      muted
-                    />
+                    <>
+                      {exportType === "video" ? (
+                        <video
+                          controls
+                          src={videoUrl}
+                          style={{ width: "100%" }}
+                          autoPlay
+                          muted
+                        />
+                      ) : (
+                        <img src={videoUrl} style={{ width: "100%" }} />
+                      )}
+                    </>
                   )}
                   {loading && <RenderProgress duration={duration} />}
                   <Button
@@ -262,6 +328,7 @@ export default function Home() {
                       video={videoBlob}
                       categories={[]}
                       onUploaded={onVideoUploaded}
+                      exportType={exportType}
                     />
                   )}
                 </Stack>
