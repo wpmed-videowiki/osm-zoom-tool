@@ -1,4 +1,4 @@
-FROM node:20.12.2-slim
+FROM node:22.21.1-slim
 WORKDIR /app
 
 RUN apt update -y  
@@ -6,7 +6,7 @@ RUN apt install -y chromium ffmpeg
 
 # copy package.json and package-lock.json   
 COPY package*.json ./
-RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm install
+RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm install --omit=dev
 
 # copy the rest of the files
 COPY . .
