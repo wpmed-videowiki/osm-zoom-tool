@@ -4,7 +4,7 @@ import {
   Button,
   ButtonGroup,
   Container,
-  Grid,
+  GridLegacy as Grid,
   Stack,
   TextField,
   Typography,

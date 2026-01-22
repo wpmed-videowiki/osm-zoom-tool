@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { use } from "react";
 import "./style.css";
 import dynamic from "next/dynamic";
 
@@ -6,7 +7,8 @@ const RenderMap = dynamic(() => import("../../components/RenderMap"), {
   ssr: false,
 });
 
-const RenderPage = ({ searchParams }) => {
+const RenderPage = props => {
+  const searchParams = use(props.searchParams);
   const zoomSnap = parseFloat(searchParams.zoom_snap);
   const zoom = parseFloat(searchParams.zoom);
   const lat = parseFloat(searchParams.lat);
